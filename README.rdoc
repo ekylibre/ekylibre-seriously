@@ -1,0 +1,3 @@
+= Seriously
+
+Extension Ekylibre permettant à une plateforme Serious de contrôler l'instance Ekylibre.
