@@ -3,3 +3,17 @@ author "Brice Texier <brice@ekylibre.com>"
 name "seriously"
 version "0.0.0"
 app '> 1.2.0', '< 2.0.0'
+
+add_routes do
+  namespace :seriously do
+    namespace :v1 do
+      resources :games
+      resources :turns
+      resources :entities
+      resources :sales
+      resources :purchases
+      resources :loans
+      resources :product_nature_variants
+    end
+  end
+end
