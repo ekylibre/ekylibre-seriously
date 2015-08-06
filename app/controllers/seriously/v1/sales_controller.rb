@@ -1,46 +1,51 @@
-class Seriously::V1::SalesController < BaseController
+class Seriously::V1::SalesController < Seriously::V1::BaseController
 
   def create
+    puts params.inspect
     # Create client
-    unless Preference.find_by(name: "serious.entities.#{params[:client][:code]}")
-      Preference.create!(name: "serious.entities.#{params[:client][:code]}")
-      entity_attributes = {
-        last_name: params[:client][:name]
-      }
-      client = Entity.create!(entity_attributes)
-    end
+    client = find_entity(params[:customer])
 
     items = Hash.new
     params[:items].each_with_index { |item, index| items[index] = item  }
     
     # Create sale
-    sale_attributes = {
+    sale = Sale.create!(
       client: client,
-      items_attributes: {
-        items: items
-      }
-    }
-    sale = Sale.create!(sale_attributes)
+      invoiced_at: params[:invoiced_at],
+      items_attributes: items
+    )
 
     # Create incoming_payment
-    incoming_attributes = {
-      amount: params[:sale][:amount]
-    }
-    incoming_payment = IncomingPayment.create!(incoming_attributes)
+    incoming_payment = IncomingPayment.create!(
+      amount: params[:amount]
+    )
+
+    # Attach incoming_payment to sale affair
+    sale.affair.deal_with!(incoming_payment)
 
     # Create outoging_delivery
-    # outoging_delivery_attributes = {
-    #
-    # }
-    # OutgoingDelivery
+    outgoing_delivery = sale.outgoing_deliveries.create!(
+      recipient: client,
+      reference_number: params[:number],
+      sent_at: params[:invoiced_at],
+      items: []
+    )
 
     result = {
-      sale: {id: sale.id, number: sale.number},
-      client: {},
-      incoming_payment: {amount: incoming_payment.amount},
-      outgoing_delivery: {}
+      sale: {
+        id: sale.id,
+        number: sale.number
+      },
+      incoming_payment: {
+        id: incoming_payment.id,
+        number: incoming_payment.number
+      },
+      outgoing_delivery: {
+        id: outgoing_delivery.id,
+        number: outgoing_delivery.number
+      }
     }
-    render json: result
+    render json: result.to_json
   end
 
   def cancel    

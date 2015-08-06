@@ -11,13 +11,13 @@ namespace :seriously do
     fail "No TOKEN" unless token
     puts "Retrieving conf".yellow + "..."
     result = nil
-    open(url, "X-Auth-Token" => token) do |f|
+    open(url, "Authorization" => "g-token #{token}") do |f|
       result = f.read
     end
     conf = JSON.parse(result).deep_symbolize_keys
     force = %w(true t 1 yes).include?(ENV["FORCE"]) || conf[:force]
     conf[:farms].each do |farm|
-      print ("Configuring #{farm[:name]} farm: ").ljust(30)
+      print ("Configuring #{farm[:name].to_s.yellow} farm: ").ljust(40)
       tenant = farm[:tenant]
       if force and  Ekylibre::Tenant.exist?(tenant)
         Ekylibre::Tenant.drop(tenant)
@@ -32,7 +32,7 @@ namespace :seriously do
         Preference.set!(:country, conf[:country] || :fr)
         Preference.set!(:language, conf[:language] || :fra)
         Preference.set!(:chart_of_accounts, conf[:chart_of_accounts] || :fr_pcga)
-        Preference.set!(:serious_token, farm[:token])
+        Preference.set!("serious.s-token", farm[:token])
         print "."
 
         # Configure farm entity
