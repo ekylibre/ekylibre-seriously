@@ -10,7 +10,11 @@ add_routes do
       resources :games
       resources :turns
       resources :entities
-      resources :sales
+      resources :sales do
+        member do
+          post :cancel
+        end
+      end
       resources :purchases
       resources :loans
       resources :product_nature_variants
