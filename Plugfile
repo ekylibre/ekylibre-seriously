@@ -7,7 +7,7 @@ app '> 1.2.0', '< 2.0.0'
 add_routes do
   namespace :seriously do
     namespace :v1 do
-      resources :games
+      resource :game
       resources :turns
       resources :entities
       resources :sales do
@@ -21,3 +21,20 @@ add_routes do
     end
   end
 end
+
+# Install timecop travels
+initializer "seriously.time.traveling" do |app|
+  ApplicationController.class_eval do
+
+    around_action :back_to_future
+    
+    def back_to_future
+      Seriously::Timescope.freeze do
+        yield
+      end
+    end
+    
+  end
+end
+
+snippet :seriously

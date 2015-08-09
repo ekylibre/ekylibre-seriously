@@ -1,13 +1,12 @@
 class Seriously::V1::SalesController < Seriously::V1::BaseController
-
   def create
     puts params.inspect
     # Create client
     client = find_entity(params[:customer])
 
-    items = Hash.new
-    params[:items].each_with_index { |item, index| items[index] = item  }
-    
+    items = {}
+    params[:items].each_with_index { |item, index| items[index] = item }
+
     # Create sale
     sale = Sale.create!(
       client: client,
@@ -48,7 +47,6 @@ class Seriously::V1::SalesController < Seriously::V1::BaseController
     render json: result.to_json
   end
 
-  def cancel    
+  def cancel
   end
-
 end
