@@ -1,16 +1,18 @@
 class Seriously::V1::GuidesController < Seriously::V1::BaseController
+  # Run many guides and returns global report
   def run_all
     guides = params[:guides] || [:economy]
     global_report = {}
     guides.each do |name|
-      report = "Seriously#{name.classify}Guide::Base".constantize.run(verbose: false)
+      report = "Seriously::#{name.to_s.classify}Guide::Base".constantize.run(verbose: false)
       global_report[name] = report
     end
     render json: global_report
   end
 
+  # Run on guide and returns report
   def run
-    report = "Seriously#{name.classify}Guide::Base".constantize.run(verbose: false)
+    report = "Seriously::#{params[:id].to_s.classify}Guide::Base".constantize.run(verbose: false)
     render json: report
   end
 
