@@ -36,5 +36,4 @@ class Seriously::V1::BaseController < ApplicationController
       yield
     end
   end
-
 end

@@ -1,14 +1,21 @@
-author "Brice Texier <brice@ekylibre.com>"
+author 'Brice Texier <brice@ekylibre.com>'
 
-name "seriously"
-version "0.0.0"
+name 'seriously'
+version '0.0.0'
 app '> 1.2.0', '< 2.0.0'
 
 add_routes do
   namespace :seriously do
     namespace :v1 do
       resource :game
-      resources :turns
+      resources :guides do
+        collection do
+          get :run, to: 'seriously/v1/guides#run_all'
+        end
+        member do
+          get :run
+        end
+      end
       resources :entities
       resources :sales do
         member do
@@ -23,17 +30,15 @@ add_routes do
 end
 
 # Install timecop travels
-initializer "seriously.time.traveling" do |app|
+initializer 'seriously.time.traveling' do |_app|
   ApplicationController.class_eval do
-
     around_action :back_to_future
-    
+
     def back_to_future
       Seriously::Timescope.freeze do
         yield
       end
     end
-    
   end
 end
 

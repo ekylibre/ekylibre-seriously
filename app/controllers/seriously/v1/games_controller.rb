@@ -6,7 +6,7 @@ class Seriously::V1::GamesController < Seriously::V1::BaseController
         started_at: Time.zone.parse(turn[:started_at]),
         stopped_at: Time.zone.parse(turn[:stopped_at]),
         inside_started_at: Time.zone.parse(turn[:inside][:started_at]),
-        inside_stopped_at: Time.zone.parse(turn[:inside][:stopped_at]),
+        inside_stopped_at: Time.zone.parse(turn[:inside][:stopped_at])
       }
       hash[:frozen_at] = turn[:frozen_at] ? Time.zone.parse(turn[:frozen_at]) : hash[:stopped_at]
       hash.stringify_keys
