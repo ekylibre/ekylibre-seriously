@@ -24,7 +24,7 @@ add_routes do
       end
       resources :purchases
       resources :loans
-      resources :product_nature_variants
+      resources :products, only: [:index]
     end
   end
 end
