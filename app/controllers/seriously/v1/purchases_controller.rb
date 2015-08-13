@@ -33,6 +33,7 @@ class Seriously::V1::PurchasesController < Seriously::V1::BaseController
       invoiced_at: params[:invoiced_on],
       items_attributes: items
     )
+
     purchase.propose!
     purchase.confirm!
     purchase.invoice!
@@ -62,6 +63,7 @@ class Seriously::V1::PurchasesController < Seriously::V1::BaseController
       if item[:product]
         product.update(item.require(:product).permit(:name, :description, :born_at, :identification_number, :work_number))
       end
+
       attrs[:product_attributes] = product
       attrs
     end
@@ -74,7 +76,6 @@ class Seriously::V1::PurchasesController < Seriously::V1::BaseController
       received_at: params[:invoiced_at],
       items_attributes: items
     )
-
     result = {
       purchase: {
         id: purchase.id,

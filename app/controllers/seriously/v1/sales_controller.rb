@@ -3,16 +3,19 @@ class Seriously::V1::SalesController < Seriously::V1::BaseController
   # Create a sale, its payment and delivery
   def create
     currency = params[:currency] || Preference[:currency]
+    puts 'Currency'
 
-    # Create supplier
-    supplier = find_entity(params[:supplier])
-    puts supplier.inspect
+    # Create client
+    client = find_entity(params[:customer])
+    puts 'CREATION CLIENT'
 
     # Find sale nature
     nature = find_sale_nature(currency)
+    puts 'FIND SALE NATURE'
 
     # Find responsible
     responsible = find_responsible
+    puts 'FIND RESPONSIBLE'
 
     # Create sale
     items = params[:items].each_with_index.each_with_object({}) do |(item, index), hash|
@@ -25,11 +28,10 @@ class Seriously::V1::SalesController < Seriously::V1::BaseController
           tax_id: tax.id
       }.stringify_keys
     end
-    puts items.to_yaml.green
     sale = Sale.create!(
         nature: nature,
-        supplier: supplier,
-        responsible: responsible,
+        client: client,
+        responsible: responsible.person,
         invoiced_at: params[:invoiced_on],
         items_attributes: items
     )
@@ -42,15 +44,13 @@ class Seriously::V1::SalesController < Seriously::V1::BaseController
 
 
     # Create incoming_payment
-    puts sale.items.to_yaml.yellow
     incoming_payment = IncomingPayment.create!(
         mode: mode,
-        payee: supplier,
+        payer: client,
         to_bank_at: sale.invoiced_at,
         responsible: responsible,
         amount: sale.amount
     )
-
     # Attach incoming_payment to sale affair
     sale.deal_with!(incoming_payment.affair)
 
@@ -59,20 +59,16 @@ class Seriously::V1::SalesController < Seriously::V1::BaseController
       # Get product informations
       variant = ProductNatureVariant.import_from_nomenclature(item[:variant])
       attrs = {population: item[:quantity], container: find_container}
-      product = {variant: variant, initial_population: item[:quantity]}
-      if item[:product]
-        product.update(item.require(:product).permit(:name, :description, :born_at, :identification_number, :work_number))
-      end
-      attrs[:product_attributes] = product
+      attrs[:product_id] = item[:product_id]
       attrs
     end
     outgoing_delivery = OutgoingDelivery.create!(
         address: find_main_address,
         sale: sale,
-        sender: supplier,
+        recipient: client,
         mode: :delivered_at_place,
         reference_number: params[:number],
-        received_at: params[:invoiced_at],
+        sent_at: sale.invoiced_at,
         items_attributes: items
     )
 
