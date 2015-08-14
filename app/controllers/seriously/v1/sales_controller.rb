@@ -3,19 +3,15 @@ class Seriously::V1::SalesController < Seriously::V1::BaseController
   # Create a sale, its payment and delivery
   def create
     currency = params[:currency] || Preference[:currency]
-    puts 'Currency'
 
     # Create client
     client = find_entity(params[:customer])
-    puts 'CREATION CLIENT'
 
     # Find sale nature
     nature = find_sale_nature(currency)
-    puts 'FIND SALE NATURE'
 
     # Find responsible
     responsible = find_responsible
-    puts 'FIND RESPONSIBLE'
 
     # Create sale
     items = params[:items].each_with_index.each_with_object({}) do |(item, index), hash|
@@ -42,7 +38,6 @@ class Seriously::V1::SalesController < Seriously::V1::BaseController
     # Find incoming payment mode
     mode = find_incoming_payment_mode(currency)
 
-
     # Create incoming_payment
     incoming_payment = IncomingPayment.create!(
         mode: mode,
@@ -57,7 +52,6 @@ class Seriously::V1::SalesController < Seriously::V1::BaseController
     # Create outgoing_delivery
     items = params[:items].map do |item|
       # Get product informations
-      variant = ProductNatureVariant.import_from_nomenclature(item[:variant])
       attrs = {population: item[:quantity], container: find_container}
       attrs[:product_id] = item[:product_id]
       attrs

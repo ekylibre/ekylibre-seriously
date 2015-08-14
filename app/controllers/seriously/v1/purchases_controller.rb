@@ -91,6 +91,7 @@ class Seriously::V1::PurchasesController < Seriously::V1::BaseController
       }
     }
     render json: result.to_json
+
   end
 
   protected
