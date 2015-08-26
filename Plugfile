@@ -24,6 +24,7 @@ add_routes do
       end
       resources :purchases
       resources :loans
+      resources :scenario_issue
       resources :products, only: [:index]
     end
   end
