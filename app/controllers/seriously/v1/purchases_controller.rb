@@ -58,8 +58,8 @@ class Seriously::V1::PurchasesController < Seriously::V1::BaseController
     items = params[:items].map do |item|
       # Get product informations
       variant = ProductNatureVariant.import_from_nomenclature(item[:variant])
-      attrs = { population: item[:quantity], container: find_container }
-      product = { variant: variant, initial_population: item[:quantity] }
+      attrs = { population: item[:quantity] }
+      product = { variant: variant, nature: variant.nature, initial_population: item[:quantity] }
       if item[:product]
         product.update(item.require(:product).permit(:name, :description, :born_at, :identification_number, :work_number))
       end
@@ -67,15 +67,19 @@ class Seriously::V1::PurchasesController < Seriously::V1::BaseController
       attrs[:product_attributes] = product
       attrs
     end
-    incoming_delivery = IncomingDelivery.create!(
+    puts items.inspect.yellow
+    parcel = Parcel.create!(
+      nature: :incoming,
+      storage: find_container,
       address: find_main_address,
       purchase: purchase,
       sender: supplier,
-      mode: :delivered_at_place,
+      delivery_mode: :indifferent,
       reference_number: params[:number],
-      received_at: params[:invoiced_at],
+      planned_at: params[:invoiced_at],
       items_attributes: items
     )
+    delivery = Parcel.ship([parcel], started_at: params[:invoiced_at], delivery_mode: :third)
     result = {
       purchase: {
         id: purchase.id,
@@ -85,9 +89,13 @@ class Seriously::V1::PurchasesController < Seriously::V1::BaseController
         id: outgoing_payment.id,
         number: outgoing_payment.number
       },
-      incoming_delivery: {
-        id: incoming_delivery.id,
-        number: incoming_delivery.number
+      parcel: {
+        id: parcel.id,
+        number: parcel.number
+      },
+      delivery: {
+        id: delivery.id,
+        number: delivery.number
       }
     }
     render json: result.to_json
@@ -133,7 +141,7 @@ class Seriously::V1::PurchasesController < Seriously::V1::BaseController
       journal = Journal.find_or_initialize_by(nature: :bank, currency: currency)
       journal.name = 'enumerize.journal.nature.bank'.t
       journal.save!
-      account = Account.find_or_create_in_chart(:banks)
+      account = Account.find_or_import_from_nomenclature(:banks)
       cash = Cash.create!(name: "enumerize.cash.nature.#{nature}".t, nature: nature.to_s,
                           account: account, journal: journal)
     end
