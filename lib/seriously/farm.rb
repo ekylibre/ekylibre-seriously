@@ -4,6 +4,7 @@ require 'rest-client'
 module Seriously
   module Farm
     class << self
+      
       def prepare_farms(game_url, token, options = {})
         puts 'Retrieving conf'.yellow + '...'
         response = RestClient.get(game_url, accept: :json, Authorization: "g-token #{token}")
@@ -18,8 +19,12 @@ module Seriously
           end
           conf[:historic] = historic_file if historic_file
         end
+        unless options[:confirm].is_a?(FalseClass)
+          # Confirm to serious that farms are ready
+          RestClient.post("#{game_url}/prepare", nil, accept: :json, Authorization: "g-token #{token}")
+        end
         conf[:farms].each do |farm|
-          [:historic, :currency, :country, :language, :chart_of_accounts, :administrator].each do |k|
+          [:historic, :currency, :country, :language, :accounting_system, :administrator].each do |k|
             farm[k] = conf[k] if conf.key?(k)
           end
           tenant = farm.delete(:tenant)
@@ -59,7 +64,7 @@ module Seriously
           Preference.set!(:currency, options[:currency] || :EUR)
           Preference.set!(:country, options[:country] || :fr)
           Preference.set!(:language, options[:language] || :fra)
-          Preference.set!(:chart_of_accounts, options[:chart_of_accounts] || :fr_pcga)
+          Preference.set!(:accounting_system, options[:accounting_system] || :fr_pcga)
           Preference.set!('serious.s-token', options[:token])
           print '.'
 
@@ -91,8 +96,12 @@ module Seriously
           team = Team.find_or_create_by!(name: 'Direction')
           print '.'
 
+          # Deactivates existing users
+          User.find_each(&:lock)
+          
           # Add admin account
-          if admin = options[:administrator]
+          admin = options[:administrator]
+          if admin
             email = admin[:email] || 'admin@ekylibre.org'
             if u = User.find_by(email: email)
               pass = admin[:password] || Devise.friendly_token
@@ -114,6 +123,7 @@ module Seriously
             u.administrator = false
             u.team = team
             u.save!
+            u.lock
             link = EntityLink.find_or_initialize_by(entity_id: u.person_id, linked_id: org.id, nature: :membership)
             link.post = 'Cogérant'
             link.save!

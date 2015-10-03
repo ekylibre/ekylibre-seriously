@@ -1,12 +1,16 @@
 namespace :seriously do
   desc 'Prepare a game'
   task prepare: :environment do
-    # Seriously::Farm.prepare_farms(ENV['GAME_URL'], ENV['TOKEN'])
-    ::GamePreparationJob.perform_later(ENV['GAME_URL'], ENV['TOKEN'])
+    ::GameJob.perform_later('prepare', ENV['GAME_URL'], ENV['TOKEN'])
   end
 
-  desc 'Configure a game'
-  task configure: :environment do
-    Seriously::Farm.prepare_farms(ENV['GAME_URL'], ENV['TOKEN'], create: false)
+  desc 'Start a game opening access to players'
+  task start: :environment do
+    ::GameJob.perform_later('start', ENV['GAME_URL'], ENV['TOKEN'])
+  end
+  
+  desc 'Stop a game and close access to players'
+  task stop: :environment do
+    ::GameJob.perform_later('stop', ENV['GAME_URL'], ENV['TOKEN'])
   end
 end
