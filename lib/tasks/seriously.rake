@@ -8,7 +8,7 @@ namespace :seriously do
   task start: :environment do
     ::GameJob.perform_later('start', ENV['GAME_URL'], ENV['TOKEN'])
   end
-  
+
   desc 'Stop a game and close access to players'
   task stop: :environment do
     ::GameJob.perform_later('stop', ENV['GAME_URL'], ENV['TOKEN'])

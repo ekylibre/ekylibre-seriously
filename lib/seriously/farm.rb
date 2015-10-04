@@ -4,7 +4,7 @@ require 'rest-client'
 module Seriously
   module Farm
     class << self
-      
+
       def prepare_farms(game_url, token, options = {})
         puts 'Retrieving conf'.yellow + '...'
         response = RestClient.get(game_url, accept: :json, Authorization: "g-token #{token}")
@@ -98,7 +98,7 @@ module Seriously
 
           # Deactivates existing users
           User.find_each(&:lock)
-          
+
           # Add admin account
           admin = options[:administrator]
           if admin

@@ -5,5 +5,5 @@ class GameJob < ActiveJob::Base
     puts "Perform #{task} on #{url}...".green
     Seriously::Game.new(url, token).send(task)
   end
-  
+
 end

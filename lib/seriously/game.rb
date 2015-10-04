@@ -10,7 +10,7 @@ module Seriously
       @token = token.to_s
       puts "New game (#{@url.red}##{@token.blue})"
     end
-    
+
     def prepare
       puts 'Retrieving conf'.yellow + '...'
       conf = configuration
@@ -50,19 +50,19 @@ module Seriously
         end
       end
     end
-    
+
     def pause
       fail :not_implemented
     end
-    
+
     def resume
       fail :not_implemented
     end
-    
+
     def configuration
       @configuration ||= get
     end
-    
+
     def test
       get
       return true
@@ -102,14 +102,14 @@ module Seriously
         Preference.set!(:accounting_system, options[:accounting_system] || :fr_pcga)
         Preference.set!('serious.s-token', options[:token])
         print '.'
-        
+
         Account.load_defaults
         print '.'
         Sequence.load_defaults
         print '.'
         DocumentTemplate.load_defaults
         print '.'
-        
+
         # Configure default role
         role = Role.find_or_initialize_by(name: 'Gérant')
         rights = Ekylibre::Access.all_rights
@@ -120,20 +120,20 @@ module Seriously
         role.rights = rights
         role.save!
         print '.'
-        
+
         # Configure farm entity
         org = Entity.find_or_initialize_by(of_company: true)
         org.last_name = options[:name]
         org.save!
         print '.'
-        
+
         # Configure default team
         team = Team.find_or_create_by!(name: 'Direction')
         print '.'
-        
+
         # Deactivates existing users
         User.find_each(&:lock)
-        
+
         # Add admin account
         admin = options[:administrator]
         if admin
@@ -145,7 +145,7 @@ module Seriously
           end
         end
         print '.'
-        
+
         # Configure users
         options[:users].each do |user|
           pass = user[:password] || (Rails.env.development? ? '12345678' : Devise.friendly_token)
@@ -172,17 +172,17 @@ module Seriously
       response = RestClient.get(@url + path, accept: :json, Authorization: "g-token #{@token}")
       return JSON.parse(response).deep_symbolize_keys
     end
-    
+
     def post(path = '', data = nil)
       response = RestClient.post(@url + path, data, accept: :json, Authorization: "g-token #{@token}")
       return JSON.parse(response).deep_symbolize_keys
     end
-    
+
     def request_data(path = '')
       response = RestClient.get(@url + path, Authorization: "g-token #{@token}")
       return response
     end
-    
+
     def request_file(path = '', options = {})
       data = request_data(path)
       file = nil
@@ -193,6 +193,6 @@ module Seriously
       return file
     end
 
-    
+
   end
 end

@@ -4,5 +4,5 @@ class GamePreparationJob < ActiveJob::Base
   def perform(url, token)
     Seriously::Farm.prepare_farms(url, token)
   end
-  
+
 end
