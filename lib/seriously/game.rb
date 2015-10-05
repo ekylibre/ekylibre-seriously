@@ -33,7 +33,7 @@ module Seriously
         Ekylibre::Tenant.switch(farm[:tenant]) do
           farm[:users].each do |user|
             resource = User.find_by(email: user[:email])
-            puts "Unlock #{resource.inspect.blue}"
+            puts "Unlock #{resource.email.blue}"
             resource.unlock if resource
           end
         end
@@ -45,6 +45,7 @@ module Seriously
         Ekylibre::Tenant.switch(farm[:tenant]) do
           farm[:users].each do |user|
             resource = User.find_by(email: user[:email])
+            puts "Lock #{resource.email.blue}"
             resource.lock if resource
           end
         end

@@ -27,7 +27,7 @@ class Seriously::V1::LoansController < Seriously::V1::BaseController
     render json: result.to_json
   end
 
-  
+
   protected
 
   def find_cash(currency)

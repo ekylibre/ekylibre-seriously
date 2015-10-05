@@ -20,7 +20,7 @@ class Seriously::EconomyGuide < ActiveGuide::Base
     test :gos_greater_than_50, proc { variables.gross_operating_surplus > 50}
   end
 
-  group :environment do    
+  group :environment do
   end
 
   group :social do
