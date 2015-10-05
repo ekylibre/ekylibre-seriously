@@ -1,12 +1,11 @@
-# coding: utf-8
 class Seriously::V1::LoansController < Seriously::V1::BaseController
   def create
     currency = params[:currency] || Preference[:currency]
 
-    #Create lender
+    # Create lender
     lender = find_entity(params[:lender])
 
-    #Create loan
+    # Create loan
     loan = Loan.create!(
       currency: currency,
       lender: lender,
@@ -20,25 +19,31 @@ class Seriously::V1::LoansController < Seriously::V1::BaseController
     )
 
     result = {
-        loan:{
-            id: loan.id,
-            name: loan.name
-        }
+      loan:{
+        id: loan.id,
+        name: loan.name
+      }
     }
     render json: result.to_json
-
   end
+
+  
   protected
 
   def find_cash(currency)
-    unless(cash = Cash.find_by(nature: :bank_account, currency: currency))
+    cash = Cash.find_by(nature: :bank_account, currency: currency)
+    unless cash
       nature = :bank_account
       journal = Journal.find_or_initialize_by(nature: :bank, currency: currency)
       journal.name = 'enumerize.journal.nature.bank'.t
       journal.save!
-      account = Account.find_or_create_in_chart(:banks)
-      cash = Cash.create!(name: "enumerize.cash.nature.#{nature}".t, nature: nature.to_s,
-                          account: account, journal: journal)
+      account = Account.find_or_import_from_nomenclature(:banks)
+      cash = Cash.create!(
+        name: "enumerize.cash.nature.#{nature}".t,
+        nature: nature.to_s,
+        account: account,
+        journal: journal
+      )
     end
     cash
   end

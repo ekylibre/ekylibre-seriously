@@ -6,7 +6,7 @@ class Seriously::V1::PurchasesController < Seriously::V1::BaseController
 
     # Create supplier
     supplier = find_entity(params[:supplier])
-    puts supplier.inspect
+    # puts supplier.inspect
 
     # Find purchase nature
     nature = find_purchase_nature(currency)
@@ -25,7 +25,7 @@ class Seriously::V1::PurchasesController < Seriously::V1::BaseController
         tax_id: tax.id
       }.stringify_keys
     end
-    puts items.to_yaml.green
+    # puts items.to_yaml.green
     purchase = Purchase.create!(
       nature: nature,
       supplier: supplier,
@@ -42,7 +42,7 @@ class Seriously::V1::PurchasesController < Seriously::V1::BaseController
     mode = find_outgoing_payment_mode(currency)
 
     # Create outgoing_payment
-    puts purchase.items.to_yaml.yellow
+    # puts purchase.items.to_yaml.yellow
     outgoing_payment = OutgoingPayment.create!(
       mode: mode,
       payee: supplier,
@@ -67,7 +67,7 @@ class Seriously::V1::PurchasesController < Seriously::V1::BaseController
       attrs[:product_attributes] = product
       attrs
     end
-    puts items.inspect.yellow
+    # puts items.inspect.yellow
     parcel = Parcel.create!(
       nature: :incoming,
       storage: find_container,
