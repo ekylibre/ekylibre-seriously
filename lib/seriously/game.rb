@@ -60,6 +60,19 @@ module Seriously
       fail :not_implemented
     end
 
+    def evaluate
+      reports = {}
+      configuration[:farms].each do |farm|
+        Ekylibre::Tenant.switch(farm[:tenant]) do
+          Seriously::Timescope.freeze do
+            reports[farm[:tenant]] = Seriously::GlobalGuide.run
+          end
+        end
+      end
+      post_json('/evaluate', ratings: reports)
+    end
+
+
     def configuration
       @configuration ||= get
     end
@@ -175,7 +188,12 @@ module Seriously
     end
 
     def post(path = '', data = nil)
-      response = RestClient.post(@url + path, data, accept: :json, Authorization: "g-token #{@token}")
+      response = RestClient.post(@url + path, data.to_json, accept: :json, Authorization: "g-token #{@token}")
+      return JSON.parse(response).deep_symbolize_keys
+    end
+
+    def post_json(path = '', data = nil)
+      response = RestClient.post(@url + path, data.to_json, content_type: :json, accept: :json, Authorization: "g-token #{@token}")
       return JSON.parse(response).deep_symbolize_keys
     end
 

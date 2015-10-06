@@ -1,10 +1,9 @@
 module Seriously
   module Timescope
     class << self
-      def freeze(&block)
-        frozen_at = Time.zone.local(1953, 3, 16)
+      def freeze(frozen_at = nil, &block)
         pref = Preference.find_by(name: 'serious.turns')
-        if pref
+        if frozen_at.nil? && pref
           now = Time.now
           turns = YAML.load(pref.value)
           active = turns.detect do |turn|
@@ -23,9 +22,11 @@ module Seriously
           end
         else
           puts 'Cannot find turns'.red
+          frozen_at = Time.zone.local(1953, 3, 16)
         end
         puts "Time is frozen at #{frozen_at.l(locale: :eng)}".green
         Timecop.freeze(frozen_at, &block)
+        return frozen_at
       end
     end
   end

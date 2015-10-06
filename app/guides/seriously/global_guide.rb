@@ -1,12 +1,8 @@
 # Guide to test economy
-class Seriously::EconomyGuide < ActiveGuide::Base
+class Seriously::GlobalGuide < ActiveGuide::Base
   group :economic do
     before do
-      variables.gross_operating_surplus = 50
-    end
-    group :sales do
-      test :minimal_sales_revenue, proc { Sale.where('invoiced_at >= ?', Time.now - 1.year).sum(:amount) > 10_000 }
-      test :positive_balance, proc { Sale.where('invoiced_at >= ?', Time.now - 1.year).sum(:amount) > Purchase.where('invoiced_at >= ?', Time.now - 1.year).sum(:amount) }
+      variables.gross_operating_surplus = rand(70)
     end
     test :gos_greater_than_5,  proc { variables.gross_operating_surplus > 5}
     test :gos_greater_than_10, proc { variables.gross_operating_surplus > 10}
