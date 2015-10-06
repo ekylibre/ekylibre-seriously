@@ -4,6 +4,8 @@ name 'seriously'
 version '0.0.0'
 app '> 1.2.0', '< 2.0.0'
 
+add_theme_stylesheet "*", "snippet"
+
 add_routes do
   namespace :seriously do
     namespace :v1 do
@@ -43,4 +45,4 @@ initializer 'seriously.time.traveling' do |_app|
   end
 end
 
-snippet :seriously
+snippet :status

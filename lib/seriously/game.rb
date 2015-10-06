@@ -115,6 +115,7 @@ module Seriously
         Preference.set!(:language, options[:language] || :fra)
         Preference.set!(:accounting_system, options[:accounting_system] || :fr_pcga)
         Preference.set!('serious.s-token', options[:token])
+        Preference.set!('serious.url', options[:url])
         print '.'
 
         Account.load_defaults
