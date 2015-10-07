@@ -22,8 +22,8 @@ module Seriously
           end
         else
           puts 'Cannot find turns'.red
-          frozen_at = Time.zone.local(1953, 3, 16)
         end
+        frozen_at ||= Time.zone.local(1953, 3, 16)
         puts "Time is frozen at #{frozen_at.l(locale: :eng)}".green
         Timecop.freeze(frozen_at, &block)
         return frozen_at

@@ -1,3 +1,14 @@
 eng:
+  actions:
+    seriously/interventions:
+      index: "Interventions"
+  labels:
+    intervention_fertilizing: "Fertilizing"
+    intervention_irrigating: "Irrigating"
+    intervention_harvesting: "Harvesting"
+    intervention_planting: "Planting"
+    intervention_pruning: "Pruning"
+    intervention_spraying: "Spraying"
+    intervention_tilling: "Tilling"
   snippets:
-    seriously-status: Game of Farms
+    seriously-status: "Game of Farms"
