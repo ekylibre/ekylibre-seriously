@@ -81,13 +81,13 @@ class Seriously::GlobalGuide < ActiveGuide::Base
         for cast in intervention.casts.of_generic_role(:input)
           c = nil
           c = carbon[cast.variant.reference_name] if cast.variant
-          cast_carbon_inpact = cast.population * c if c
+          cast_carbon_inpact = cast.population * c.to_d if c
           intervention_carbon_inpact << cast_carbon_inpact
         end
         # for tool / equipment
         for cast in intervention.casts.of_generic_role(:tool)
           c = 50
-          cast_carbon_inpact = cast.duration.to_d(:hours) * c if cast.duration
+          cast_carbon_inpact = cast.duration.to_d(:hour) * c if cast.duration
           intervention_carbon_inpact << cast_carbon_inpact
         end
         i = intervention_carbon_inpact.compact.sum
