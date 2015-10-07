@@ -59,7 +59,7 @@ class Seriously::GlobalGuide < ActiveGuide::Base
   group :environment do
     before do
       # get current campaign
-      campaign = Campaign.at
+      campaign = Campaign.at.first
       # load YML abacus for CO2
       path = Pathname.new(__FILE__).dirname.join('carbon.csv')
       carbon = {}
@@ -71,13 +71,52 @@ class Seriously::GlobalGuide < ActiveGuide::Base
       else
         fail "Where is carbon.csv ?"
       end
-      # get variant for all intervention
-      
-      # transcode variant
-      # carbon[variant]
-      
+      # get all intervention
+      interventions = Intervention.of_campaign(campaign).real
+      interventions_carbon_impact_per_hectare = []
+      # get relative co2 impact of cast for each intervention
+      for intervention in interventions
+        intervention_carbon_inpact = []
+        # for input
+        for cast in intervention.casts.of_generic_role(:input)
+          c = nil
+          c = carbon[cast.variant.reference_name] if cast.variant
+          cast_carbon_inpact = cast.population * c if c
+          intervention_carbon_inpact << cast_carbon_inpact
+        end
+        # for tool / equipment
+        for cast in intervention.casts.of_generic_role(:tool)
+          c = 50
+          cast_carbon_inpact = cast.duration.to_d(:hours) * c if cast.duration
+          intervention_carbon_inpact << cast_carbon_inpact
+        end
+        i = intervention_carbon_inpact.compact.sum
+        area = intervention.working_area.to_d(:hectare)
+        interventions_carbon_impact_per_hectare << (i/area).to_f if area != 0.0
+      end
+      # sum of interventions_carbon_impact_per_hectare in kg per hectare
+      variables.ico_ha = interventions_carbon_impact_per_hectare.compact.sum
     end
-    
+    test :carbon_emission_per_hectare_less_than_5000_kg,  proc { variables.ico_ha < 5000}
+    test :carbon_emission_per_hectare_less_than_4750_kg,  proc { variables.ico_ha < 4750}
+    test :carbon_emission_per_hectare_less_than_4500_kg,  proc { variables.ico_ha < 4500}
+    test :carbon_emission_per_hectare_less_than_4250_kg,  proc { variables.ico_ha < 4250}
+    test :carbon_emission_per_hectare_less_than_4000_kg,  proc { variables.ico_ha < 4000}
+    test :carbon_emission_per_hectare_less_than_3750_kg,  proc { variables.ico_ha < 3750}
+    test :carbon_emission_per_hectare_less_than_3500_kg,  proc { variables.ico_ha < 3500}
+    test :carbon_emission_per_hectare_less_than_3250_kg,  proc { variables.ico_ha < 3250}
+    test :carbon_emission_per_hectare_less_than_3000_kg,  proc { variables.ico_ha < 3000}
+    test :carbon_emission_per_hectare_less_than_2750_kg,  proc { variables.ico_ha < 2750}
+    test :carbon_emission_per_hectare_less_than_2500_kg,  proc { variables.ico_ha < 2500}
+    test :carbon_emission_per_hectare_less_than_2250_kg,  proc { variables.ico_ha < 2250}
+    test :carbon_emission_per_hectare_less_than_2000_kg,  proc { variables.ico_ha < 2000}
+    test :carbon_emission_per_hectare_less_than_1750_kg,  proc { variables.ico_ha < 1750}
+    test :carbon_emission_per_hectare_less_than_1500_kg,  proc { variables.ico_ha < 1500}
+    test :carbon_emission_per_hectare_less_than_1250_kg,  proc { variables.ico_ha < 1250}
+    test :carbon_emission_per_hectare_less_than_1000_kg,  proc { variables.ico_ha < 1000}
+    test :carbon_emission_per_hectare_less_than_750_kg,  proc { variables.ico_ha < 750}
+    test :carbon_emission_per_hectare_less_than_500_kg,  proc { variables.ico_ha < 500}
+    test :carbon_emission_per_hectare_less_than_250_kg,  proc { variables.ico_ha < 250}
   end
 
   group :social do
