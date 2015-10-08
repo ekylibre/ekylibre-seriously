@@ -16,6 +16,13 @@ class Seriously::V1::GuidesController < Seriously::V1::BaseController
     render json: report
   end
 
+  def quality
+    preference = Preference.get!('contracts_quality.average', 0.0, :decimal)
+    preference.value = params[:rating].to_f
+    preference.save!
+    render json: {status: 'ok'}
+  end
+
   protected
 
   def humanize_report(report)

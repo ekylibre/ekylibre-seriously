@@ -4,7 +4,7 @@ class Seriously::GlobalGuide < ActiveGuide::Base
     before do
       # get current financial year
       financial_year = FinancialYear.at
-      
+
       # operating_margin_on_turnover = ( operating_margin / turnover_value) * 100
       product_value = financial_year.sum_entry_items('70 71 72 73 74')
       charge_value = financial_year.sum_entry_items('60 61 62 63 64')
@@ -12,7 +12,7 @@ class Seriously::GlobalGuide < ActiveGuide::Base
       operating_margin =  ( - product_value - charge_value ) if product_value && charge_value
       variables.operating_margin_on_turnover = 0
       variables.operating_margin_on_turnover = ( operating_margin / - turnover_value) * 100 if operating_margin && turnover_value && turnover_value != 0.0
-      
+
       # debts_on_assets = (debts / assets) * 100
       financial_debt = financial_year.sum_entry_items('1641 1642 1643 4553 4554 519, 512 514 517 C, 5186 161 163 165 166 1675 168 17 426, 451 456 458 C')
       other_debt = financial_year.sum_entry_items('401 4031 4081 4088 402 4032 4082, 445 C, 421 422 424 427 4282 4284 4286 431 437 4382 4386 442, 443 444 C, 446 447 4482 4486 457, 4551 4552 C, 269 279 404 405 4084 4196 4197 4198 4419, 452 453 454 461 C, 464, 467 C, 4686, 478 C, 509')
@@ -27,11 +27,11 @@ class Seriously::GlobalGuide < ActiveGuide::Base
       assets = asset + stock + client + portfolio_value + bank + advance_charge if asset && stock && client && portfolio_value && bank && advance_charge
       variables.debts_on_assets = 100
       variables.debts_on_assets = (- debts / assets) * 100 if debts && assets && assets != 0.0
-      
+
       # liquid_assets_on_turnover = (liquid_assets / turnover_value) * 100
       variables.liquid_assets_on_turnover = 0.0
       variables.liquid_assets_on_turnover = (-bank / turnover_value) * 100 if bank && turnover_value && turnover_value != 0.0
-      
+
     end
     test :operating_margin_on_turnover_greater_than_5,  proc { variables.operating_margin_on_turnover > 5}
     test :operating_margin_on_turnover_greater_than_10, proc { variables.operating_margin_on_turnover > 10}

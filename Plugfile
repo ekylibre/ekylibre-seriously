@@ -13,6 +13,7 @@ add_routes do
       resources :guides do
         collection do
           get :run, to: 'seriously/v1/guides#run_all'
+          post :quality
         end
         member do
           get :run
