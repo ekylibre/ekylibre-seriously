@@ -81,13 +81,13 @@ class Seriously::GlobalGuide < ActiveGuide::Base
         for cast in intervention.casts.of_generic_role(:input)
           c = nil
           c = carbon[cast.variant.reference_name] if cast.variant
-          cast_carbon_inpact = cast.population * c if c
+          cast_carbon_inpact = cast.population * c.to_d if c
           intervention_carbon_inpact << cast_carbon_inpact
         end
         # for tool / equipment
         for cast in intervention.casts.of_generic_role(:tool)
           c = 50
-          cast_carbon_inpact = cast.duration.to_d(:hours) * c if cast.duration
+          cast_carbon_inpact = cast.duration.to_d(:hour) * c if cast.duration
           intervention_carbon_inpact << cast_carbon_inpact
         end
         i = intervention_carbon_inpact.compact.sum
@@ -120,12 +120,77 @@ class Seriously::GlobalGuide < ActiveGuide::Base
   end
 
   group :social do
+    before do
+      campaign = Campaign.at.first
+      duration = []
+      for worker in Workers.all
+        operations = Operation.of_campaign(campaign).with_generic_cast(:doer, worker).reorder(:started_at)
+        duration << operations.pluck(:duration).compact.sum if operations.any?
+      end
+      variables.duration_per_worker_per_year = (duration.compact.sum / Workers.count)
+      variables.duration_per_worker_per_month = (duration.compact.sum / Workers.count) / 12
+      variables.duration_per_worker_per_opened_day = (duration.compact.sum / Workers.count) / 225
+    end
+    test :duration_per_worker_per_year_less_than_1800_hours,  proc { variables.duration_per_worker_per_year < 1800}
+    test :duration_per_worker_per_year_less_than_1750_hours,  proc { variables.duration_per_worker_per_year < 1750}
+    test :duration_per_worker_per_year_less_than_1700_hours,  proc { variables.duration_per_worker_per_year < 1700}
+    test :duration_per_worker_per_year_less_than_1650_hours,  proc { variables.duration_per_worker_per_year < 1650}
+    test :duration_per_worker_per_year_less_than_1600_hours,  proc { variables.duration_per_worker_per_year < 1600}
+    test :duration_per_worker_per_month_less_than_180_hours,  proc { variables.duration_per_worker_per_month < 180}
+    test :duration_per_worker_per_month_less_than_175_hours,  proc { variables.duration_per_worker_per_month < 175}
+    test :duration_per_worker_per_month_less_than_170_hours,  proc { variables.duration_per_worker_per_month < 170}
+    test :duration_per_worker_per_month_less_than_160_hours,  proc { variables.duration_per_worker_per_month < 160}
+    test :duration_per_worker_per_opened_day_less_than_9_hours,  proc { variables.duration_per_worker_per_opened_day < 9}
+    test :duration_per_worker_per_opened_day_less_than_8_5_hours,  proc { variables.duration_per_worker_per_opened_day < 8.5}
+    test :duration_per_worker_per_opened_day_less_than_8_hours,  proc { variables.duration_per_worker_per_opened_day < 8}
+    test :duration_per_worker_per_opened_day_less_than_7_5_hours,  proc { variables.duration_per_worker_per_opened_day < 7.5}
   end
 
   group :legality do
+    before do
+      # get current campaign
+      campaign = Campaign.at.first
+      # Documents presence
+      variables.intervention_register = Document.where(nature: "intervention_register").count
+      variables.phytosanitary_register = Document.where(nature: "phytosanitary_register").count
+      variables.land_parcel_register = Document.where(nature: "land_parcel_register").count
+      variables.manure_management_plan = Document.where(nature: "manure_management_plan").count
+      variables.general_ledger = Document.where(nature: "general_ledger").count
+    end
+    test :presence_of_intervention_register,  proc { variables.intervention_register > 0}
+    test :presence_of_phytosanitary_register,  proc { variables.phytosanitary_register > 0}
+    test :presence_of_land_parcel_register,  proc { variables.land_parcel_register > 0}
+    test :presence_of_manure_management_plan,  proc { variables.manure_management_plan > 0}
+    test :presence_of_general_ledger,  proc { variables.general_ledger > 0}
+    
   end
 
   group :quality do
+    before do
+      # TODO
+      variables.rating == 0
+      
+    end
+    test :contrat_rating_greater_than_0,  proc { variables.rating > 0}
+    test :contrat_rating_greater_than_1,  proc { variables.rating > 1}
+    test :contrat_rating_greater_than_2,  proc { variables.rating > 2}
+    test :contrat_rating_greater_than_3,  proc { variables.rating > 3}
+    test :contrat_rating_greater_than_4,  proc { variables.rating > 4}
+    test :contrat_rating_greater_than_5,  proc { variables.rating > 5}
+    test :contrat_rating_greater_than_6,  proc { variables.rating > 6}
+    test :contrat_rating_greater_than_7,  proc { variables.rating > 7}
+    test :contrat_rating_greater_than_8,  proc { variables.rating > 8}
+    test :contrat_rating_greater_than_9,  proc { variables.rating > 9}
+    test :contrat_rating_greater_than_10,  proc { variables.rating > 10}
+    test :contrat_rating_greater_than_11,  proc { variables.rating > 11}
+    test :contrat_rating_greater_than_12,  proc { variables.rating > 12}
+    test :contrat_rating_greater_than_13,  proc { variables.rating > 13}
+    test :contrat_rating_greater_than_14,  proc { variables.rating > 14}
+    test :contrat_rating_greater_than_15,  proc { variables.rating > 15}
+    test :contrat_rating_greater_than_16,  proc { variables.rating > 16}
+    test :contrat_rating_greater_than_17,  proc { variables.rating > 17}
+    test :contrat_rating_greater_than_18,  proc { variables.rating > 18}
+    test :contrat_rating_greater_than_19,  proc { variables.rating > 19}
   end
 
 end

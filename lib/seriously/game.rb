@@ -19,7 +19,7 @@ module Seriously
       conf[:historic] = historic_file if historic_file
       post('/prepare')
       conf[:farms].each do |farm|
-        [:historic, :currency, :country, :language, :accounting_system, :administrator].each do |k|
+        [:historic, :currency, :country, :language, :accounting_system, :administrator, :url].each do |k|
           farm[k] = conf[k] if conf.key?(k)
         end
         tenant = farm.delete(:tenant)
@@ -114,6 +114,8 @@ module Seriously
         Preference.set!(:country, options[:country] || :fr)
         Preference.set!(:language, options[:language] || :fra)
         Preference.set!(:accounting_system, options[:accounting_system] || :fr_pcga)
+        Preference.set!(:force_intervention_started_at, true)
+        Preference.set!(:force_intervention_stopped_at, true)
         Preference.set!('serious.s-token', options[:token])
         Preference.set!('serious.url', options[:url])
         print '.'

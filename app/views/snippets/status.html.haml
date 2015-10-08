@@ -1,6 +1,6 @@
 .seriously-time
   %p= Time.zone.now.l
 - pref = Preference.find_by(name: 'serious.url')
-- if pref
+- if pref && pref.value.present?
   %p.seriously-time
     = link_to("Partie", pref.value)
