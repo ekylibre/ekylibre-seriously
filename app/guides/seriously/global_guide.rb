@@ -162,14 +162,11 @@ class Seriously::GlobalGuide < ActiveGuide::Base
     test :presence_of_land_parcel_register,  proc { variables.land_parcel_register > 0}
     test :presence_of_manure_management_plan,  proc { variables.manure_management_plan > 0}
     test :presence_of_general_ledger,  proc { variables.general_ledger > 0}
-    
   end
 
   group :quality do
     before do
-      # TODO
-      variables.rating == 0
-      
+      variables.rating = Preference.get!('contracts_quality.average', 0.0, :decimal)      
     end
     test :contrat_rating_greater_than_0,  proc { variables.rating > 0}
     test :contrat_rating_greater_than_1,  proc { variables.rating > 1}
