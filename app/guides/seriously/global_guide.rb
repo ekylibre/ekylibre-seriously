@@ -91,6 +91,7 @@ class Seriously::GlobalGuide < ActiveGuide::Base
           intervention_carbon_inpact << cast_carbon_inpact
         end
         i = intervention_carbon_inpact.compact.sum
+        next unless intervention.working_area
         area = intervention.working_area.to_d(:hectare)
         interventions_carbon_impact_per_hectare << (i/area).to_f if area != 0.0
       end
@@ -123,13 +124,13 @@ class Seriously::GlobalGuide < ActiveGuide::Base
     before do
       campaign = Campaign.at.first
       duration = []
-      for worker in Workers.all
+      for worker in Worker.all
         operations = Operation.of_campaign(campaign).with_generic_cast(:doer, worker).reorder(:started_at)
         duration << operations.pluck(:duration).compact.sum if operations.any?
       end
-      variables.duration_per_worker_per_year = (duration.compact.sum / Workers.count)
-      variables.duration_per_worker_per_month = (duration.compact.sum / Workers.count) / 12
-      variables.duration_per_worker_per_opened_day = (duration.compact.sum / Workers.count) / 225
+      variables.duration_per_worker_per_year = (duration.compact.sum / Worker.count)
+      variables.duration_per_worker_per_month = (duration.compact.sum / Worker.count) / 12
+      variables.duration_per_worker_per_opened_day = (duration.compact.sum / Worker.count) / 225
     end
     test :duration_per_worker_per_year_less_than_1800_hours,  proc { variables.duration_per_worker_per_year < 1800}
     test :duration_per_worker_per_year_less_than_1750_hours,  proc { variables.duration_per_worker_per_year < 1750}
@@ -166,7 +167,7 @@ class Seriously::GlobalGuide < ActiveGuide::Base
 
   group :quality do
     before do
-      variables.rating = Preference.get!('contracts_quality.average', 0.0, :decimal)      
+      variables.rating = Preference.get!('contracts_quality.average', 0.0, :decimal).value
     end
     test :contrat_rating_greater_than_0,  proc { variables.rating > 0}
     test :contrat_rating_greater_than_1,  proc { variables.rating > 1}
