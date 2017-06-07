@@ -5,7 +5,7 @@ module Seriously
         pref = Preference.find_by(name: 'serious.turns')
         if frozen_at.nil? && pref
           now = Time.now
-          turns = YAML.load(pref.value)
+          turns = YAML.safe_load(pref.value)
           active = turns.detect do |turn|
             turn['started_at'] <= now && now < turn['stopped_at']
           end
@@ -26,7 +26,7 @@ module Seriously
         frozen_at ||= Time.zone.local(1953, 3, 16)
         puts "Time is frozen at #{frozen_at.l(locale: :eng)}".green
         Timecop.freeze(frozen_at, &block)
-        return frozen_at
+        frozen_at
       end
     end
   end

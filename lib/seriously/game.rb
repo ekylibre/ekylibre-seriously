@@ -1,10 +1,9 @@
 # coding: utf-8
+
 require 'rest-client'
 
 module Seriously
-
   class Game
-
     def initialize(url, token)
       @url = url.to_s
       @token = token.to_s
@@ -19,7 +18,7 @@ module Seriously
       conf[:historic] = historic_file if historic_file
       post('/prepare')
       conf[:farms].each do |farm|
-        [:historic, :currency, :country, :language, :accounting_system, :administrator, :url].each do |k|
+        %i[historic currency country language accounting_system administrator url].each do |k|
           farm[k] = conf[k] if conf.key?(k)
         end
         tenant = farm.delete(:tenant)
@@ -53,11 +52,11 @@ module Seriously
     end
 
     def pause
-      fail :not_implemented
+      raise :not_implemented
     end
 
     def resume
-      fail :not_implemented
+      raise :not_implemented
     end
 
     def evaluate
@@ -71,7 +70,6 @@ module Seriously
       end
       post_json('/evaluate', ratings: reports)
     end
-
 
     def configuration
       @configuration ||= get
@@ -87,12 +85,12 @@ module Seriously
     protected
 
     def prepare_farm(tenant, options = {})
-      print ("Configuring #{tenant.to_s.yellow} farm: ").ljust(40)
+      print "Configuring #{tenant.to_s.yellow} farm: ".ljust(40)
       if options[:create].is_a?(FalseClass)
         if Ekylibre::Tenant.exist?(tenant)
           puts "Use existing #{tenant}"
         else
-          fail "#{tenant} doesnt exist"
+          raise "#{tenant} doesnt exist"
         end
       else
         if options[:historic]
@@ -130,7 +128,7 @@ module Seriously
         # Configure default role
         role = Role.find_or_initialize_by(name: 'Gérant')
         rights = Ekylibre::Access.all_rights
-        %w(lock-users write-users write-roles write-sales write-purchases write-loans write-journal_entries write-equipments write-incoming_payments write-outgoing_payments write-inventories write-issues write-product_nature_categories write-product_natures write-product_nature_variants write-sequences write-settings write-taxes).each do |right|
+        %w[lock-users write-users write-roles write-sales write-purchases write-loans write-journal_entries write-equipments write-incoming_payments write-outgoing_payments write-inventories write-issues write-product_nature_categories write-product_natures write-product_nature_variants write-sequences write-settings write-taxes].each do |right|
           interaction, resource = right.split('-')[0..1]
           rights[resource].delete(interaction) if rights[resource]
         end
@@ -187,22 +185,22 @@ module Seriously
 
     def get(path = '')
       response = RestClient.get(@url + path, accept: :json, Authorization: "g-token #{@token}")
-      return JSON.parse(response).deep_symbolize_keys
+      JSON.parse(response).deep_symbolize_keys
     end
 
     def post(path = '', data = nil)
       response = RestClient.post(@url + path, data.to_json, accept: :json, Authorization: "g-token #{@token}")
-      return JSON.parse(response).deep_symbolize_keys
+      JSON.parse(response).deep_symbolize_keys
     end
 
     def post_json(path = '', data = nil)
       response = RestClient.post(@url + path, data.to_json, content_type: :json, accept: :json, Authorization: "g-token #{@token}")
-      return JSON.parse(response).deep_symbolize_keys
+      JSON.parse(response).deep_symbolize_keys
     end
 
     def request_data(path = '')
       response = RestClient.get(@url + path, Authorization: "g-token #{@token}")
-      return response
+      response
     end
 
     def request_file(path = '', options = {})
@@ -212,9 +210,7 @@ module Seriously
         file = options[:file] || Rails.root.join('tmp', "#{Time.now.to_i.to_s(36)}-#{rand(999_999).to_s(36)}")
         File.write(file, data, encoding: options[:encoding] || 'ASCII-8BIT')
       end
-      return file
+      file
     end
-
-
   end
 end

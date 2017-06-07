@@ -1,4 +1,5 @@
 # coding: utf-8
+
 class Seriously::V1::PurchasesController < Seriously::V1::BaseController
   # Create a purchase, its payment and delivery
   def create
@@ -99,7 +100,6 @@ class Seriously::V1::PurchasesController < Seriously::V1::BaseController
       }
     }
     render json: result.to_json
-
   end
 
   protected

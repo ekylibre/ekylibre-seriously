@@ -9,9 +9,9 @@ class Seriously::GlobalGuide < ActiveGuide::Base
       product_value = financial_year.sum_entry_items('70 71 72 73 74')
       charge_value = financial_year.sum_entry_items('60 61 62 63 64')
       turnover_value = financial_year.sum_entry_items('70 !707 !7086 !7087 !7088 !7097')
-      operating_margin =  ( - product_value - charge_value ) if product_value && charge_value
+      operating_margin = (- product_value - charge_value) if product_value && charge_value
       variables.operating_margin_on_turnover = 0
-      variables.operating_margin_on_turnover = ( operating_margin / - turnover_value) * 100 if operating_margin && turnover_value && turnover_value != 0.0
+      variables.operating_margin_on_turnover = (operating_margin / - turnover_value) * 100 if operating_margin && turnover_value && turnover_value != 0.0
 
       # debts_on_assets = (debts / assets) * 100
       financial_debt = financial_year.sum_entry_items('1641 1642 1643 4553 4554 519, 512 514 517 C, 5186 161 163 165 166 1675 168 17 426, 451 456 458 C')
@@ -31,29 +31,27 @@ class Seriously::GlobalGuide < ActiveGuide::Base
       # liquid_assets_on_turnover = (liquid_assets / turnover_value) * 100
       variables.liquid_assets_on_turnover = 0.0
       variables.liquid_assets_on_turnover = (-bank / turnover_value) * 100 if bank && turnover_value && turnover_value != 0.0
-
     end
-    test :operating_margin_on_turnover_greater_than_5,  proc { variables.operating_margin_on_turnover > 5}
-    test :operating_margin_on_turnover_greater_than_10, proc { variables.operating_margin_on_turnover > 10}
-    test :operating_margin_on_turnover_greater_than_15, proc { variables.operating_margin_on_turnover > 15}
-    test :operating_margin_on_turnover_greater_than_20, proc { variables.operating_margin_on_turnover > 20}
-    test :operating_margin_on_turnover_greater_than_25, proc { variables.operating_margin_on_turnover > 25}
-    test :operating_margin_on_turnover_greater_than_30, proc { variables.operating_margin_on_turnover > 30}
-    test :operating_margin_on_turnover_greater_than_35, proc { variables.operating_margin_on_turnover > 35}
-    test :operating_margin_on_turnover_greater_than_40, proc { variables.operating_margin_on_turnover > 40}
-    test :operating_margin_on_turnover_greater_than_45, proc { variables.operating_margin_on_turnover > 45}
-    test :operating_margin_on_turnover_greater_than_50, proc { variables.operating_margin_on_turnover > 50}
-    test :debts_on_assets_less_than_50,  proc { variables.debts_on_assets < 50}
-    test :debts_on_assets_less_than_40,  proc { variables.debts_on_assets < 40}
-    test :debts_on_assets_less_than_30,  proc { variables.debts_on_assets < 30}
-    test :debts_on_assets_less_than_20,  proc { variables.debts_on_assets < 20}
-    test :debts_on_assets_less_than_10,  proc { variables.debts_on_assets < 10}
-    test :liquid_assets_on_turnover_greater_than_50,  proc { variables.liquid_assets_on_turnover > 50}
-    test :liquid_assets_on_turnover_greater_than_70,  proc { variables.liquid_assets_on_turnover > 70}
-    test :liquid_assets_on_turnover_greater_than_90,  proc { variables.liquid_assets_on_turnover > 90}
-    test :liquid_assets_on_turnover_greater_than_100,  proc { variables.liquid_assets_on_turnover > 100}
-    test :liquid_assets_on_turnover_greater_than_110,  proc { variables.liquid_assets_on_turnover > 110}
-
+    test :operating_margin_on_turnover_greater_than_5,  proc { variables.operating_margin_on_turnover > 5 }
+    test :operating_margin_on_turnover_greater_than_10, proc { variables.operating_margin_on_turnover > 10 }
+    test :operating_margin_on_turnover_greater_than_15, proc { variables.operating_margin_on_turnover > 15 }
+    test :operating_margin_on_turnover_greater_than_20, proc { variables.operating_margin_on_turnover > 20 }
+    test :operating_margin_on_turnover_greater_than_25, proc { variables.operating_margin_on_turnover > 25 }
+    test :operating_margin_on_turnover_greater_than_30, proc { variables.operating_margin_on_turnover > 30 }
+    test :operating_margin_on_turnover_greater_than_35, proc { variables.operating_margin_on_turnover > 35 }
+    test :operating_margin_on_turnover_greater_than_40, proc { variables.operating_margin_on_turnover > 40 }
+    test :operating_margin_on_turnover_greater_than_45, proc { variables.operating_margin_on_turnover > 45 }
+    test :operating_margin_on_turnover_greater_than_50, proc { variables.operating_margin_on_turnover > 50 }
+    test :debts_on_assets_less_than_50,  proc { variables.debts_on_assets < 50 }
+    test :debts_on_assets_less_than_40,  proc { variables.debts_on_assets < 40 }
+    test :debts_on_assets_less_than_30,  proc { variables.debts_on_assets < 30 }
+    test :debts_on_assets_less_than_20,  proc { variables.debts_on_assets < 20 }
+    test :debts_on_assets_less_than_10,  proc { variables.debts_on_assets < 10 }
+    test :liquid_assets_on_turnover_greater_than_50,  proc { variables.liquid_assets_on_turnover > 50 }
+    test :liquid_assets_on_turnover_greater_than_70,  proc { variables.liquid_assets_on_turnover > 70 }
+    test :liquid_assets_on_turnover_greater_than_90,  proc { variables.liquid_assets_on_turnover > 90 }
+    test :liquid_assets_on_turnover_greater_than_100,  proc { variables.liquid_assets_on_turnover > 100 }
+    test :liquid_assets_on_turnover_greater_than_110,  proc { variables.liquid_assets_on_turnover > 110 }
   end
 
   group :environment do
@@ -69,7 +67,7 @@ class Seriously::GlobalGuide < ActiveGuide::Base
           hash
         end
       else
-        fail "Where is carbon.csv ?"
+        raise 'Where is carbon.csv ?'
       end
       # get all intervention
       interventions = Intervention.of_campaign(campaign).real
@@ -93,31 +91,31 @@ class Seriously::GlobalGuide < ActiveGuide::Base
         i = intervention_carbon_inpact.compact.sum
         next unless intervention.working_area
         area = intervention.working_area.to_d(:hectare)
-        interventions_carbon_impact_per_hectare << (i/area).to_f if area != 0.0
+        interventions_carbon_impact_per_hectare << (i / area).to_f if area != 0.0
       end
       # sum of interventions_carbon_impact_per_hectare in kg per hectare
       variables.ico_ha = interventions_carbon_impact_per_hectare.compact.sum
     end
-    test :carbon_emission_per_hectare_less_than_5000_kg,  proc { variables.ico_ha < 5000}
-    test :carbon_emission_per_hectare_less_than_4750_kg,  proc { variables.ico_ha < 4750}
-    test :carbon_emission_per_hectare_less_than_4500_kg,  proc { variables.ico_ha < 4500}
-    test :carbon_emission_per_hectare_less_than_4250_kg,  proc { variables.ico_ha < 4250}
-    test :carbon_emission_per_hectare_less_than_4000_kg,  proc { variables.ico_ha < 4000}
-    test :carbon_emission_per_hectare_less_than_3750_kg,  proc { variables.ico_ha < 3750}
-    test :carbon_emission_per_hectare_less_than_3500_kg,  proc { variables.ico_ha < 3500}
-    test :carbon_emission_per_hectare_less_than_3250_kg,  proc { variables.ico_ha < 3250}
-    test :carbon_emission_per_hectare_less_than_3000_kg,  proc { variables.ico_ha < 3000}
-    test :carbon_emission_per_hectare_less_than_2750_kg,  proc { variables.ico_ha < 2750}
-    test :carbon_emission_per_hectare_less_than_2500_kg,  proc { variables.ico_ha < 2500}
-    test :carbon_emission_per_hectare_less_than_2250_kg,  proc { variables.ico_ha < 2250}
-    test :carbon_emission_per_hectare_less_than_2000_kg,  proc { variables.ico_ha < 2000}
-    test :carbon_emission_per_hectare_less_than_1750_kg,  proc { variables.ico_ha < 1750}
-    test :carbon_emission_per_hectare_less_than_1500_kg,  proc { variables.ico_ha < 1500}
-    test :carbon_emission_per_hectare_less_than_1250_kg,  proc { variables.ico_ha < 1250}
-    test :carbon_emission_per_hectare_less_than_1000_kg,  proc { variables.ico_ha < 1000}
-    test :carbon_emission_per_hectare_less_than_750_kg,  proc { variables.ico_ha < 750}
-    test :carbon_emission_per_hectare_less_than_500_kg,  proc { variables.ico_ha < 500}
-    test :carbon_emission_per_hectare_less_than_250_kg,  proc { variables.ico_ha < 250}
+    test :carbon_emission_per_hectare_less_than_5000_kg,  proc { variables.ico_ha < 5000 }
+    test :carbon_emission_per_hectare_less_than_4750_kg,  proc { variables.ico_ha < 4750 }
+    test :carbon_emission_per_hectare_less_than_4500_kg,  proc { variables.ico_ha < 4500 }
+    test :carbon_emission_per_hectare_less_than_4250_kg,  proc { variables.ico_ha < 4250 }
+    test :carbon_emission_per_hectare_less_than_4000_kg,  proc { variables.ico_ha < 4000 }
+    test :carbon_emission_per_hectare_less_than_3750_kg,  proc { variables.ico_ha < 3750 }
+    test :carbon_emission_per_hectare_less_than_3500_kg,  proc { variables.ico_ha < 3500 }
+    test :carbon_emission_per_hectare_less_than_3250_kg,  proc { variables.ico_ha < 3250 }
+    test :carbon_emission_per_hectare_less_than_3000_kg,  proc { variables.ico_ha < 3000 }
+    test :carbon_emission_per_hectare_less_than_2750_kg,  proc { variables.ico_ha < 2750 }
+    test :carbon_emission_per_hectare_less_than_2500_kg,  proc { variables.ico_ha < 2500 }
+    test :carbon_emission_per_hectare_less_than_2250_kg,  proc { variables.ico_ha < 2250 }
+    test :carbon_emission_per_hectare_less_than_2000_kg,  proc { variables.ico_ha < 2000 }
+    test :carbon_emission_per_hectare_less_than_1750_kg,  proc { variables.ico_ha < 1750 }
+    test :carbon_emission_per_hectare_less_than_1500_kg,  proc { variables.ico_ha < 1500 }
+    test :carbon_emission_per_hectare_less_than_1250_kg,  proc { variables.ico_ha < 1250 }
+    test :carbon_emission_per_hectare_less_than_1000_kg,  proc { variables.ico_ha < 1000 }
+    test :carbon_emission_per_hectare_less_than_750_kg,  proc { variables.ico_ha < 750 }
+    test :carbon_emission_per_hectare_less_than_500_kg,  proc { variables.ico_ha < 500 }
+    test :carbon_emission_per_hectare_less_than_250_kg,  proc { variables.ico_ha < 250 }
   end
 
   group :social do
@@ -132,19 +130,19 @@ class Seriously::GlobalGuide < ActiveGuide::Base
       variables.duration_per_worker_per_month = (duration.compact.sum / Worker.count) / 12
       variables.duration_per_worker_per_opened_day = (duration.compact.sum / Worker.count) / 225
     end
-    test :duration_per_worker_per_year_less_than_1800_hours,  proc { variables.duration_per_worker_per_year < 1800}
-    test :duration_per_worker_per_year_less_than_1750_hours,  proc { variables.duration_per_worker_per_year < 1750}
-    test :duration_per_worker_per_year_less_than_1700_hours,  proc { variables.duration_per_worker_per_year < 1700}
-    test :duration_per_worker_per_year_less_than_1650_hours,  proc { variables.duration_per_worker_per_year < 1650}
-    test :duration_per_worker_per_year_less_than_1600_hours,  proc { variables.duration_per_worker_per_year < 1600}
-    test :duration_per_worker_per_month_less_than_180_hours,  proc { variables.duration_per_worker_per_month < 180}
-    test :duration_per_worker_per_month_less_than_175_hours,  proc { variables.duration_per_worker_per_month < 175}
-    test :duration_per_worker_per_month_less_than_170_hours,  proc { variables.duration_per_worker_per_month < 170}
-    test :duration_per_worker_per_month_less_than_160_hours,  proc { variables.duration_per_worker_per_month < 160}
-    test :duration_per_worker_per_opened_day_less_than_9_hours,  proc { variables.duration_per_worker_per_opened_day < 9}
-    test :duration_per_worker_per_opened_day_less_than_8_5_hours,  proc { variables.duration_per_worker_per_opened_day < 8.5}
-    test :duration_per_worker_per_opened_day_less_than_8_hours,  proc { variables.duration_per_worker_per_opened_day < 8}
-    test :duration_per_worker_per_opened_day_less_than_7_5_hours,  proc { variables.duration_per_worker_per_opened_day < 7.5}
+    test :duration_per_worker_per_year_less_than_1800_hours,  proc { variables.duration_per_worker_per_year < 1800 }
+    test :duration_per_worker_per_year_less_than_1750_hours,  proc { variables.duration_per_worker_per_year < 1750 }
+    test :duration_per_worker_per_year_less_than_1700_hours,  proc { variables.duration_per_worker_per_year < 1700 }
+    test :duration_per_worker_per_year_less_than_1650_hours,  proc { variables.duration_per_worker_per_year < 1650 }
+    test :duration_per_worker_per_year_less_than_1600_hours,  proc { variables.duration_per_worker_per_year < 1600 }
+    test :duration_per_worker_per_month_less_than_180_hours,  proc { variables.duration_per_worker_per_month < 180 }
+    test :duration_per_worker_per_month_less_than_175_hours,  proc { variables.duration_per_worker_per_month < 175 }
+    test :duration_per_worker_per_month_less_than_170_hours,  proc { variables.duration_per_worker_per_month < 170 }
+    test :duration_per_worker_per_month_less_than_160_hours,  proc { variables.duration_per_worker_per_month < 160 }
+    test :duration_per_worker_per_opened_day_less_than_9_hours, proc { variables.duration_per_worker_per_opened_day < 9 }
+    test :duration_per_worker_per_opened_day_less_than_8_5_hours, proc { variables.duration_per_worker_per_opened_day < 8.5 }
+    test :duration_per_worker_per_opened_day_less_than_8_hours, proc { variables.duration_per_worker_per_opened_day < 8 }
+    test :duration_per_worker_per_opened_day_less_than_7_5_hours, proc { variables.duration_per_worker_per_opened_day < 7.5 }
   end
 
   group :legality do
@@ -152,43 +150,42 @@ class Seriously::GlobalGuide < ActiveGuide::Base
       # get current campaign
       campaign = Campaign.at.first
       # Documents presence
-      variables.intervention_register = Document.where(nature: "intervention_register").count
-      variables.phytosanitary_register = Document.where(nature: "phytosanitary_register").count
-      variables.land_parcel_register = Document.where(nature: "land_parcel_register").count
-      variables.manure_management_plan = Document.where(nature: "manure_management_plan").count
-      variables.general_ledger = Document.where(nature: "general_ledger").count
+      variables.intervention_register = Document.where(nature: 'intervention_register').count
+      variables.phytosanitary_register = Document.where(nature: 'phytosanitary_register').count
+      variables.land_parcel_register = Document.where(nature: 'land_parcel_register').count
+      variables.manure_management_plan = Document.where(nature: 'manure_management_plan').count
+      variables.general_ledger = Document.where(nature: 'general_ledger').count
     end
-    test :presence_of_intervention_register,  proc { variables.intervention_register > 0}
-    test :presence_of_phytosanitary_register,  proc { variables.phytosanitary_register > 0}
-    test :presence_of_land_parcel_register,  proc { variables.land_parcel_register > 0}
-    test :presence_of_manure_management_plan,  proc { variables.manure_management_plan > 0}
-    test :presence_of_general_ledger,  proc { variables.general_ledger > 0}
+    test :presence_of_intervention_register, proc { variables.intervention_register > 0 }
+    test :presence_of_phytosanitary_register, proc { variables.phytosanitary_register > 0 }
+    test :presence_of_land_parcel_register, proc { variables.land_parcel_register > 0 }
+    test :presence_of_manure_management_plan, proc { variables.manure_management_plan > 0 }
+    test :presence_of_general_ledger, proc { variables.general_ledger > 0 }
   end
 
   group :quality do
     before do
       variables.rating = Preference.get!('contracts_quality.average', 0.0, :decimal).value
     end
-    test :contrat_rating_greater_than_0,  proc { variables.rating > 0}
-    test :contrat_rating_greater_than_1,  proc { variables.rating > 1}
-    test :contrat_rating_greater_than_2,  proc { variables.rating > 2}
-    test :contrat_rating_greater_than_3,  proc { variables.rating > 3}
-    test :contrat_rating_greater_than_4,  proc { variables.rating > 4}
-    test :contrat_rating_greater_than_5,  proc { variables.rating > 5}
-    test :contrat_rating_greater_than_6,  proc { variables.rating > 6}
-    test :contrat_rating_greater_than_7,  proc { variables.rating > 7}
-    test :contrat_rating_greater_than_8,  proc { variables.rating > 8}
-    test :contrat_rating_greater_than_9,  proc { variables.rating > 9}
-    test :contrat_rating_greater_than_10,  proc { variables.rating > 10}
-    test :contrat_rating_greater_than_11,  proc { variables.rating > 11}
-    test :contrat_rating_greater_than_12,  proc { variables.rating > 12}
-    test :contrat_rating_greater_than_13,  proc { variables.rating > 13}
-    test :contrat_rating_greater_than_14,  proc { variables.rating > 14}
-    test :contrat_rating_greater_than_15,  proc { variables.rating > 15}
-    test :contrat_rating_greater_than_16,  proc { variables.rating > 16}
-    test :contrat_rating_greater_than_17,  proc { variables.rating > 17}
-    test :contrat_rating_greater_than_18,  proc { variables.rating > 18}
-    test :contrat_rating_greater_than_19,  proc { variables.rating > 19}
+    test :contrat_rating_greater_than_0,  proc { variables.rating > 0 }
+    test :contrat_rating_greater_than_1,  proc { variables.rating > 1 }
+    test :contrat_rating_greater_than_2,  proc { variables.rating > 2 }
+    test :contrat_rating_greater_than_3,  proc { variables.rating > 3 }
+    test :contrat_rating_greater_than_4,  proc { variables.rating > 4 }
+    test :contrat_rating_greater_than_5,  proc { variables.rating > 5 }
+    test :contrat_rating_greater_than_6,  proc { variables.rating > 6 }
+    test :contrat_rating_greater_than_7,  proc { variables.rating > 7 }
+    test :contrat_rating_greater_than_8,  proc { variables.rating > 8 }
+    test :contrat_rating_greater_than_9,  proc { variables.rating > 9 }
+    test :contrat_rating_greater_than_10,  proc { variables.rating > 10 }
+    test :contrat_rating_greater_than_11,  proc { variables.rating > 11 }
+    test :contrat_rating_greater_than_12,  proc { variables.rating > 12 }
+    test :contrat_rating_greater_than_13,  proc { variables.rating > 13 }
+    test :contrat_rating_greater_than_14,  proc { variables.rating > 14 }
+    test :contrat_rating_greater_than_15,  proc { variables.rating > 15 }
+    test :contrat_rating_greater_than_16,  proc { variables.rating > 16 }
+    test :contrat_rating_greater_than_17,  proc { variables.rating > 17 }
+    test :contrat_rating_greater_than_18,  proc { variables.rating > 18 }
+    test :contrat_rating_greater_than_19,  proc { variables.rating > 19 }
   end
-
 end

@@ -1,6 +1,6 @@
 # coding: utf-8
-class Seriously::V1::SalesController < Seriously::V1::BaseController
 
+class Seriously::V1::SalesController < Seriously::V1::BaseController
   # Create a sale, its payment and delivery
   def create
     currency = params[:currency] || Preference[:currency]
@@ -53,7 +53,7 @@ class Seriously::V1::SalesController < Seriously::V1::BaseController
     # Create parcel
     items = params[:items].map do |item|
       # Get product informations
-      attrs = {population: item[:quantity]}
+      attrs = { population: item[:quantity] }
       attrs[:product_id] = item[:product_id]
       attrs
     end
@@ -142,5 +142,4 @@ class Seriously::V1::SalesController < Seriously::V1::BaseController
     mode.save!
     mode
   end
-
 end

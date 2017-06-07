@@ -19,14 +19,13 @@ class Seriously::V1::LoansController < Seriously::V1::BaseController
     )
 
     result = {
-      loan:{
+      loan: {
         id: loan.id,
         name: loan.name
       }
     }
     render json: result.to_json
   end
-
 
   protected
 

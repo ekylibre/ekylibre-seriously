@@ -1,4 +1,5 @@
 # coding: utf-8
+
 class Seriously::V1::IssuesController < Seriously::V1::BaseController
   def create
     products = Product.availables
@@ -22,7 +23,7 @@ class Seriously::V1::IssuesController < Seriously::V1::BaseController
 
     products.intersect_with(shape).find_each do |product|
       params[:global_destruction_percentage] = destruction_percentage
-      description = params[:name] + ". " + (params[:description] || "")
+      description = params[:name] + '. ' + (params[:description] || '')
       if product.shape
         product_shape = Charta::Geometry.new(product.shape)
         destroyed_area = product_shape.intersection(shape).area
@@ -44,7 +45,7 @@ class Seriously::V1::IssuesController < Seriously::V1::BaseController
     end
 
     result = {
-      state:{
+      state: {
         message: 'ok'
       }
     }
@@ -55,10 +56,9 @@ class Seriously::V1::IssuesController < Seriously::V1::BaseController
 
   def build_shape(nature, coordinates)
     if nature == 'geojson'
-      return Charta::Geometry.new(coordinates)
+      Charta::Geometry.new(coordinates)
     else
       raise "Invalid nature of coordinates: #{nature.inspect}"
     end
   end
-
 end

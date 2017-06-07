@@ -17,5 +17,4 @@ class Seriously::V1::GamesController < Seriously::V1::BaseController
     pref.save!
     head :ok
   end
-
 end

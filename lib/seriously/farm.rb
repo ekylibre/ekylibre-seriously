@@ -1,10 +1,10 @@
 # coding: utf-8
+
 require 'rest-client'
 
 module Seriously
   module Farm
     class << self
-
       def prepare_farms(game_url, token, options = {})
         puts 'Retrieving conf'.yellow + '...'
         response = RestClient.get(game_url, accept: :json, Authorization: "g-token #{token}")
@@ -24,7 +24,7 @@ module Seriously
           RestClient.post("#{game_url}/prepare", nil, accept: :json, Authorization: "g-token #{token}")
         end
         conf[:farms].each do |farm|
-          [:historic, :currency, :country, :language, :accounting_system, :administrator].each do |k|
+          %i[historic currency country language accounting_system administrator].each do |k|
             farm[k] = conf[k] if conf.key?(k)
           end
           tenant = farm.delete(:tenant)
@@ -38,12 +38,12 @@ module Seriously
 
       # Prepare given farm
       def prepare_farm(tenant, options = {})
-        print ("Configuring #{tenant.to_s.yellow} farm: ").ljust(40)
+        print "Configuring #{tenant.to_s.yellow} farm: ".ljust(40)
         if options[:create].is_a?(FalseClass)
           if Ekylibre::Tenant.exist?(tenant)
             puts "Use existing #{tenant}"
           else
-            fail "#{tenant} doesnt exist"
+            raise "#{tenant} doesnt exist"
           end
         else
           if options[:historic]
@@ -78,7 +78,7 @@ module Seriously
           # Configure default role
           role = Role.find_or_initialize_by(name: 'Gérant')
           rights = Ekylibre::Access.all_rights
-          %w(lock-users write-users write-roles write-sales write-purchases write-loans write-journal_entries write-equipments write-incoming_payments write-outgoing_payments write-inventories write-issues write-product_nature_categories write-product_natures write-product_nature_variants write-sequences write-settings write-taxes).each do |right|
+          %w[lock-users write-users write-roles write-sales write-purchases write-loans write-journal_entries write-equipments write-incoming_payments write-outgoing_payments write-inventories write-issues write-product_nature_categories write-product_natures write-product_nature_variants write-sequences write-settings write-taxes].each do |right|
             interaction, resource = right.split('-')[0..1]
             rights[resource].delete(interaction) if rights[resource]
           end
