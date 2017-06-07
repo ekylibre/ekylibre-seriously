@@ -1,0 +1,5 @@
+- subheading :choose_an_intervention
+.main-toolbar.toolbar
+  - @natures.each do |nature|
+    = link_to(new_seriously_intervention_path(nature: nature), class: "btn btn-default seriously-intervention") do
+      = "intervention_#{nature}".tl

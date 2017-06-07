@@ -1,0 +1,8 @@
+= simple_form_for(@intervention, url: {action: :create}) do |f|
+  - if params[:redirect]
+    = hidden_field_tag(:redirect, params[:redirect])
+  .form-fields
+    = render "form", f: f
+  .form-actions
+    = submit_tag :create.tl, data: {disable_with: :please_wait.tl}, class: 'primary'
+    = link_to :cancel.tl, (params[:redirect] || local_assigns[:cancel_url] || {action: :index}), (params[:dialog] ? {class: 'btn', data: {close_dialog: params[:dialog]}} : {class: 'btn'})

@@ -1,0 +1,32 @@
+- campaign = Campaign.order(:harvest_year).last
+= hidden_field_tag(:nature, params[:nature])
+= field_set :targets do
+  = f.input :started_at, as: :datetime
+  .control-group
+    %label.control-label= Intervention.human_attribute_name(:targets)
+    .controls.symbol-list
+      - ::ProductionSupport.of_campaign(campaign).joins(:storage).order("products.name").each do |support|
+        %label.nomenclature-item{class: "#{'checked' if @intervention.supports.include? support}"}
+          = check_box_tag("targets[#{support.id}]")
+          %span= "#{support.name} (#{support.production.name})"
+  .control-group
+    %label.control-label= Intervention.human_attribute_name(:doers)
+    .controls.symbol-list
+      - ::Worker.availables.each do |worker|
+        %label.nomenclature-item{class: "#{'checked' if @intervention.doers.include? worker}"}
+          = check_box_tag("doers[#{worker.id}]")
+          %span= worker.name
+- if @intervention.with_inputs?
+  = field_set :inputs do
+    .control-group
+      %label.control-label= Intervention.human_attribute_name(:input)
+      .controls
+        .input-append
+          = selector_tag(:input_id, {controller: "/backend/products", action: :unroll, scope: @intervention.input_scope})
+    .control-group
+      %label.control-label= Intervention.human_attribute_name(:quantity)
+      .controls
+        .input-append
+          = number_field_tag(:quantity)
+          - units = @intervention.input_units
+          = select_tag(:unit, options_for_select(units.map {|u| [u.human_name, u.name]}))
